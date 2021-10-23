@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"strings"
 )
 
-//编辑器地址@http://editor.behavior3.com/#/editor
-//节点json类型
+// BTNodeCfg 行为树节点配置
 type BTNodeCfg struct {
 	Id          string                 `json:"id"`
 	Name        string                 `json:"name"`
@@ -20,66 +20,48 @@ type BTNodeCfg struct {
 	Properties  map[string]interface{} `json:"properties"`
 }
 
-func (this *BTNodeCfg) GetProperty(name string) float64 {
-	v, ok := this.Properties[name]
+func (btnc *BTNodeCfg) GetPropertyAsFloat64(name string) float64 {
+	v, ok := btnc.Properties[name]
 	if !ok {
-		panic("GetProperty err ,no vlaue:" + name)
 		return 0
 	}
-	f64, fok := v.(float64)
-	if !fok {
-		fmt.Println("GetProperty err ,format not fload64:", name, v)
-		panic("GetProperty err ,format not fload64:" + name)
-		return 0
-	}
-	return f64
+	return v.(float64)
 }
 
-func (this *BTNodeCfg) GetPropertyAsInt(name string) int {
-	v := this.GetProperty(name)
-	i := int(v)
-	return i
-}
-func (this *BTNodeCfg) GetPropertyAsInt64(name string) int64 {
-	v := this.GetProperty(name)
-	i := int64(v)
-	return i
-}
-func (this *BTNodeCfg) GetPropertyAsBool(name string) bool {
-	v, ok := this.Properties[name]
+func (btnc *BTNodeCfg) GetPropertyAsInt64(name string) int64 {
+	v, ok := btnc.Properties[name]
 	if !ok {
-		//panic("GetProperty err ,no vlaue:" + name)
+		return 0
+	}
+	return int64(v.(float64))
+}
+
+func (btnc *BTNodeCfg) GetPropertyAsBool(name string) bool {
+	v, ok := btnc.Properties[name]
+	if !ok {
 		return false
 	}
 
-	b, fok := v.(bool)
-	if !fok {
-		if str, sok := v.(string); sok {
-			return str == "true"
+	b, ok := v.(bool)
+	if !ok {
+		if str, ok := v.(string); ok {
+			return strings.ToLower(str) == "true"
 		}
-		fmt.Println("GetProperty err ,format not bool:", name, v)
-		panic("GetProperty err ,format not bool:" + name)
 		return false
 	}
+
 	return b
 }
-func (this *BTNodeCfg) GetPropertyAsString(name string) string {
-	v, ok := this.Properties[name]
-	if !ok {
-		panic("GetProperty err ,no vlaue:" + name)
-		return ""
-	}
 
-	str, fok := v.(string)
-	if !fok {
-		fmt.Println("GetProperty err ,format not string:", name, v)
-		panic("GetProperty err ,format not string:" + name)
+func (btnc *BTNodeCfg) GetPropertyAsString(name string) string {
+	v, ok := btnc.Properties[name]
+	if !ok {
 		return ""
 	}
-	return str
+	return v.(string)
 }
 
-//树json类型
+// BTTreeCfg 行为树配置
 type BTTreeCfg struct {
 	ID          string                 `json:"id"`
 	Title       string                 `json:"title"`
@@ -89,21 +71,19 @@ type BTTreeCfg struct {
 	Nodes       map[string]BTNodeCfg   `json:"nodes"`
 }
 
-//加载
-func LoadTreeCfg(path string) (*BTTreeCfg, bool) {
-
+// LoadTreeCfg 加载行为树
+func LoadTreeCfg(path string) (*BTTreeCfg, error) {
 	var tree BTTreeCfg
+
 	file, err := ioutil.ReadFile(path)
 	if err != nil {
-		fmt.Println("fail:", err)
-		return nil, false
-	}
-	err = json.Unmarshal(file, &tree)
-	if err != nil {
-		fmt.Println("fail, ummarshal:", err, len(file))
-		return nil, false
+		return nil, fmt.Errorf("LoadTreeCfg failed, %v", err)
 	}
 
-	//fmt.Println("load tree:", tree.Title, " nodes:", len(tree.Nodes))
-	return &tree, true
+	err = json.Unmarshal(file, &tree)
+	if err != nil {
+		return nil, fmt.Errorf("LoadTreeCfg failed, %v", err)
+	}
+
+	return &tree, nil
 }

@@ -1,9 +1,6 @@
 package loader
 
 import (
-	_ "fmt"
-	_ "reflect"
-
 	b3 "github.com/pangdogs/behavior3go"
 	. "github.com/pangdogs/behavior3go/actions"
 	. "github.com/pangdogs/behavior3go/composites"
@@ -14,6 +11,7 @@ import (
 
 func createBaseStructMaps() *b3.RegisterStructMaps {
 	st := b3.NewRegisterStructMaps()
+
 	//actions
 	st.Register("Error", &Error{})
 	st.Register("Failer", &Failer{})
@@ -21,6 +19,7 @@ func createBaseStructMaps() *b3.RegisterStructMaps {
 	st.Register("Succeeder", &Succeeder{})
 	st.Register("Wait", &Wait{})
 	st.Register("Log", &Log{})
+
 	//composites
 	st.Register("MemPriority", &MemPriority{})
 	st.Register("MemSequence", &MemSequence{})
@@ -34,6 +33,7 @@ func createBaseStructMaps() *b3.RegisterStructMaps {
 	st.Register("Repeater", &Repeater{})
 	st.Register("RepeatUntilFailure", &RepeatUntilFailure{})
 	st.Register("RepeatUntilSuccess", &RepeatUntilSuccess{})
+
 	return st
 }
 

@@ -9,6 +9,6 @@ type Runner struct {
 	Action
 }
 
-func (this *Runner) OnTick(tick *Tick) b3.Status {
+func (r *Runner) OnTick(tick *Tick) b3.Status {
 	return b3.RUNNING
 }

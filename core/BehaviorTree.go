@@ -147,7 +147,7 @@ func (this *BehaviorTree) SetDebug(debug interface{}) {
 	this.debug = debug
 }
 
-func  (this *BehaviorTree) GetRoot() IBaseNode {
+func (this *BehaviorTree) GetRoot() IBaseNode {
 	return this.root
 }
 

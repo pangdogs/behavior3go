@@ -1,8 +1,8 @@
 package behavior3go
 
-//b3 define
+// b3 define
 const (
-	VERSION = "0.2.0"
+	VERSION = "0.0.1"
 
 	// Node categories
 	COMPOSITE = "composite"

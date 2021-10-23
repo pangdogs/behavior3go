@@ -3,9 +3,9 @@ package decorators
 import (
 	"time"
 
-	b3 "github.com/magicsea/behavior3go"
-	. "github.com/magicsea/behavior3go/config"
-	. "github.com/magicsea/behavior3go/core"
+	b3 "github.com/pangdogs/behavior3go"
+	. "github.com/pangdogs/behavior3go/config"
+	. "github.com/pangdogs/behavior3go/core"
 )
 
 /**

@@ -5,11 +5,11 @@ package main
 
 import (
 	"fmt"
-	b3 "github.com/magicsea/behavior3go"
-	. "github.com/magicsea/behavior3go/config"
-	. "github.com/magicsea/behavior3go/core"
-	. "github.com/magicsea/behavior3go/examples/share"
-	. "github.com/magicsea/behavior3go/loader"
+	b3 "github.com/pangdogs/behavior3go"
+	. "github.com/pangdogs/behavior3go/config"
+	. "github.com/pangdogs/behavior3go/core"
+	. "github.com/pangdogs/behavior3go/examples/share"
+	. "github.com/pangdogs/behavior3go/loader"
 	"sync"
 	"time"
 )

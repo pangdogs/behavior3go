@@ -4,7 +4,6 @@ import (
 	"fmt"
 	b3 "github.com/pangdogs/behavior3go"
 	. "github.com/pangdogs/behavior3go/config"
-	. "github.com/pangdogs/behavior3go/core"
 )
 
 type Log struct {

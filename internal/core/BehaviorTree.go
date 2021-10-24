@@ -2,9 +2,9 @@ package core
 
 import (
 	"fmt"
-
 	b3 "github.com/pangdogs/behavior3go"
 	"github.com/pangdogs/behavior3go/config"
+	"github.com/rs/xid"
 )
 
 /**
@@ -115,7 +115,7 @@ type BehaviorTree struct {
 	dumpInfo *config.BTTreeCfg
 }
 
-func NewBeTree() *BehaviorTree {
+func NewBevTree() *BehaviorTree {
 	tree := &BehaviorTree{}
 	tree.Initialize()
 	return tree
@@ -127,7 +127,8 @@ func NewBeTree() *BehaviorTree {
  * @construCtor
 **/
 func (this *BehaviorTree) Initialize() {
-	this.id = b3.CreateUUID()
+	xid.
+		this.id = b3.CreateUUID()
 	this.title = "The behavior tree"
 	this.description = "Default description"
 	this.properties = make(map[string]interface{})
@@ -179,7 +180,7 @@ func (this *BehaviorTree) GetRoot() IBaseNode {
  * @param {Object} data The data structure representing a Behavior Tree.
  * @param {Object} [names] A namespace or dict containing custom nodes.
 **/
-func (this *BehaviorTree) Load(data *config.BTTreeCfg, maps *b3.RegisterStructMaps, extMaps *b3.RegisterStructMaps) {
+func (this *BehaviorTree) Load(data *config.BTTreeCfg, maps *b3.NodeLib) error {
 	this.title = data.Title             //|| this.title;
 	this.description = data.Description // || this.description;
 	this.properties = data.Properties   // || this.properties;
@@ -192,7 +193,7 @@ func (this *BehaviorTree) Load(data *config.BTTreeCfg, maps *b3.RegisterStructMa
 		spec := &s
 		var node IBaseNode
 
-		if spec.Category == "tree" {
+		if spec.CategoryName == "tree" {
 			node = new(SubTree)
 		} else {
 			if extMaps != nil && extMaps.CheckElem(spec.Name) {
@@ -217,7 +218,7 @@ func (this *BehaviorTree) Load(data *config.BTTreeCfg, maps *b3.RegisterStructMa
 
 		node.Ctor()
 		node.Initialize(spec)
-		node.SetBaseNodeWorker(node.(IBaseWorker))
+		node.SetBaseWorker(node.(IBaseWorker))
 		nodes[id] = node
 	}
 

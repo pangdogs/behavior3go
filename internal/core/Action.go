@@ -1,10 +1,5 @@
 package core
 
-import (
-	b3 "github.com/pangdogs/behavior3go"
-	. "github.com/pangdogs/behavior3go/config"
-)
-
 type IAction interface {
 	IBaseNode
 }
@@ -31,14 +26,6 @@ type Action struct {
 	BaseWorker
 }
 
-func (this *Action) Ctor() {
-	this.category = b3.ACTION
-}
-func (this *Action) Initialize(params *BTNodeCfg) {
-
-	//this.id = b3.CreateUUID()
-	this.BaseNode.Initialize(params)
-	//this.BaseNode.IBaseWorker = this
-	this.parameters = make(map[string]interface{})
-	this.properties = make(map[string]interface{})
+func (a *Action) Ctor() {
+	a.category = ACTION
 }

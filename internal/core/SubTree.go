@@ -1,18 +1,16 @@
 package core
 
 import (
-	b3 "github.com/pangdogs/behavior3go"
 	. "github.com/pangdogs/behavior3go/config"
 )
 
-//子树，通过Name关联树ID查找
+// SubTree 子树，通过Name关联树ID查找
 type SubTree struct {
 	Action
-	//tree *BehaviorTree
 }
 
-func (this *SubTree) Initialize(setting *BTNodeCfg) {
-	this.Action.Initialize(setting)
+func (st *SubTree) Initialize(setting *BTNodeCfg) {
+	st.Action.Initialize(setting)
 }
 
 /**
@@ -21,13 +19,12 @@ func (this *SubTree) Initialize(setting *BTNodeCfg) {
  *如果子树包含running状态，同时复用了子树会导致歧义。
  *改为只使用一个树，一个tick上下文。
 **/
-func (this *SubTree) OnTick(tick *Tick) b3.Status {
-
+func (st *SubTree) OnTick(tick *Tick) Status {
 	//使用子树，必须先SetSubTreeLoadFunc
 	//子树可能没有加载上来，所以要延迟加载执行
-	sTree := subTreeLoadFunc(this.GetName())
+	sTree := subTreeLoadFunc(st.GetName())
 	if nil == sTree {
-		return b3.ERROR
+		return ERROR
 	}
 
 	if tick.GetTarget() == nil {
@@ -37,19 +34,19 @@ func (this *SubTree) OnTick(tick *Tick) b3.Status {
 	//tar := tick.GetTarget()
 	//return sTree.Tick(tar, tick.Blackboard)
 
-	tick.pushSubtreeNode(this)
+	tick.pushSubtreeNode(st)
 	ret := sTree.GetRoot().Execute(tick)
 	tick.popSubtreeNode()
 	return ret
 }
 
-func (this *SubTree) String() string {
-	return "SBT_" + this.GetTitle()
+func (st *SubTree) String() string {
+	return "SBT_" + st.GetTitle()
 }
 
 var subTreeLoadFunc func(string) *BehaviorTree
 
-//获取子树的方法
+// 获取子树的方法
 func SetSubTreeLoadFunc(f func(string) *BehaviorTree) {
 	subTreeLoadFunc = f
 }

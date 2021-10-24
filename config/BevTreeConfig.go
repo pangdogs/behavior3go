@@ -9,15 +9,15 @@ import (
 
 // BTNodeCfg 行为树节点配置
 type BTNodeCfg struct {
-	Id          string                 `json:"id"`
-	Name        string                 `json:"name"`
-	Category    string                 `json:"category"`
-	Title       string                 `json:"title"`
-	Description string                 `json:"description"`
-	Children    []string               `json:"children"`
-	Child       string                 `json:"child"`
-	Parameters  map[string]interface{} `json:"parameters"`
-	Properties  map[string]interface{} `json:"properties"`
+	Id           string                 `json:"id"`
+	Name         string                 `json:"name"`
+	CategoryName string                 `json:"category"`
+	Title        string                 `json:"title"`
+	Description  string                 `json:"description"`
+	Children     []string               `json:"children"`
+	Child        string                 `json:"child"`
+	Parameters   map[string]interface{} `json:"parameters"`
+	Properties   map[string]interface{} `json:"properties"`
 }
 
 func (btnc *BTNodeCfg) GetPropertyAsFloat64(name string) float64 {

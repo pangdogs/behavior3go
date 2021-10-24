@@ -1,15 +1,6 @@
 package core
 
-import (
-	"fmt"
-	_ "fmt"
-
-	b3 "github.com/pangdogs/behavior3go"
-	_ "github.com/pangdogs/behavior3go/config"
-)
-
 type IBaseWorker interface {
-
 	/**
 	 * Enter method, override this to use. It is called every time a node is
 	 * asked to execute, before the tick itself.
@@ -18,6 +9,7 @@ type IBaseWorker interface {
 	 * @param {Tick} tick A tick instance.
 	**/
 	OnEnter(tick *Tick)
+
 	/**
 	 * Open method, override this to use. It is called only before the tick
 	 * callback and only if the not isn't closed.
@@ -28,6 +20,7 @@ type IBaseWorker interface {
 	 * @param {Tick} tick A tick instance.
 	**/
 	OnOpen(tick *Tick)
+
 	/**
 	 * Tick method, override this to use. This method must contain the real
 	 * execution of node (perform a task, call children, etc.). It is called
@@ -36,7 +29,8 @@ type IBaseWorker interface {
 	 * @method tick
 	 * @param {Tick} tick A tick instance.
 	**/
-	OnTick(tick *Tick) b3.Status
+	OnTick(tick *Tick) Status
+
 	/**
 	 * Close method, override this to use. This method is called after the tick
 	 * callback, and only if the tick return a state different from
@@ -46,6 +40,7 @@ type IBaseWorker interface {
 	 * @param {Tick} tick A tick instance.
 	**/
 	OnClose(tick *Tick)
+
 	/**
 	 * Exit method, override this to use. Called every time in the end of the
 	 * execution.
@@ -55,6 +50,7 @@ type IBaseWorker interface {
 	**/
 	OnExit(tick *Tick)
 }
+
 type BaseWorker struct {
 }
 
@@ -65,8 +61,7 @@ type BaseWorker struct {
  * @method enter
  * @param {Tick} tick A tick instance.
 **/
-func (this *BaseWorker) OnEnter(tick *Tick) {
-
+func (bw *BaseWorker) OnEnter(tick *Tick) {
 }
 
 /**
@@ -78,8 +73,7 @@ func (this *BaseWorker) OnEnter(tick *Tick) {
  * @method open
  * @param {Tick} tick A tick instance.
 **/
-func (this *BaseWorker) OnOpen(tick *Tick) {
-
+func (bw *BaseWorker) OnOpen(tick *Tick) {
 }
 
 /**
@@ -90,9 +84,8 @@ func (this *BaseWorker) OnOpen(tick *Tick) {
  * @method tick
  * @param {Tick} tick A tick instance.
 **/
-func (this *BaseWorker) OnTick(tick *Tick) b3.Status {
-	fmt.Println("tick BaseWorker")
-	return b3.ERROR
+func (bw *BaseWorker) OnTick(tick *Tick) Status {
+	return ERROR
 }
 
 /**
@@ -103,8 +96,7 @@ func (this *BaseWorker) OnTick(tick *Tick) b3.Status {
  * @method close
  * @param {Tick} tick A tick instance.
 **/
-func (this *BaseWorker) OnClose(tick *Tick) {
-
+func (bw *BaseWorker) OnClose(tick *Tick) {
 }
 
 /**
@@ -114,6 +106,5 @@ func (this *BaseWorker) OnClose(tick *Tick) {
  * @method exit
  * @param {Tick} tick A tick instance.
 **/
-func (this *BaseWorker) OnExit(tick *Tick) {
-
+func (bw *BaseWorker) OnExit(tick *Tick) {
 }

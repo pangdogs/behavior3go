@@ -1,41 +1,31 @@
 package composites
 
 import (
-	b3 "github.com/pangdogs/behavior3go"
-	. "github.com/pangdogs/behavior3go/core"
+	. "github.com/pangdogs/behavior3go/internal/core"
 )
 
 type MemSequence struct {
 	Composite
 }
 
-/**
- * Open method.
- * @method open
- * @param {b3.Tick} tick A tick instance.
-**/
-func (this *MemSequence) OnOpen(tick *Tick) {
-	tick.Blackboard.Set("runningChild", 0, tick.GetTree().GetID(), this.GetID())
+func (ms *MemSequence) OnOpen(tick *Tick) {
+	tick.Blackboard.Set("runningChild", 0, tick.GetTree().GetID(), ms.GetID())
 }
 
-/**
- * Tick method.
- * @method tick
- * @param {b3.Tick} tick A tick instance.
- * @return {Constant} A state constant.
-**/
-func (this *MemSequence) OnTick(tick *Tick) b3.Status {
-	var child = tick.Blackboard.GetInt("runningChild", tick.GetTree().GetID(), this.GetID())
-	for i := child; i < this.GetChildCount(); i++ {
-		var status = this.GetChild(i).Execute(tick)
+func (ms *MemSequence) OnTick(tick *Tick) Status {
+	var child = tick.Blackboard.GetInt("runningChild", tick.GetTree().GetID(), ms.GetID())
 
-		if status != b3.SUCCESS {
-			if status == b3.RUNNING {
-				tick.Blackboard.Set("runningChild", i, tick.GetTree().GetID(), this.GetID())
+	for i := child; i < ms.GetChildCount(); i++ {
+		status := ms.GetChild(i).Execute(tick)
+
+		if status != SUCCESS {
+			if status == RUNNING {
+				tick.Blackboard.Set("runningChild", i, tick.GetTree().GetID(), ms.GetID())
 			}
 
 			return status
 		}
 	}
-	return b3.SUCCESS
+
+	return SUCCESS
 }

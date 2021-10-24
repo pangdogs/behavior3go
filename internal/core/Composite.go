@@ -1,30 +1,30 @@
 package core
 
 type IComposite interface {
-	IBaseNode
+	Node
 	GetChildCount() int
-	GetChild(index int) IBaseNode
-	AddChild(child IBaseNode)
+	GetChild(index int) Node
+	AddChild(child Node)
 }
 
 type Composite struct {
 	BaseNode
 	BaseWorker
-	children []IBaseNode
+	children []Node
 }
 
-func (c *Composite) Ctor() {
-	c.category = COMPOSITE
+func (c *Composite) GetCategory() Category {
+	return COMPOSITE
 }
 
 func (c *Composite) GetChildCount() int {
 	return len(c.children)
 }
 
-func (c *Composite) GetChild(index int) IBaseNode {
+func (c *Composite) GetChild(index int) Node {
 	return c.children[index]
 }
 
-func (c *Composite) AddChild(child IBaseNode) {
+func (c *Composite) AddChild(child Node) {
 	c.children = append(c.children, child)
 }

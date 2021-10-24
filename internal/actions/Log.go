@@ -2,8 +2,8 @@ package actions
 
 import (
 	"fmt"
-	b3 "github.com/pangdogs/behavior3go"
-	. "github.com/pangdogs/behavior3go/config"
+	. "github.com/pangdogs/behavior3go/internal/config"
+	. "github.com/pangdogs/behavior3go/internal/core"
 )
 
 type Log struct {
@@ -11,12 +11,12 @@ type Log struct {
 	info string
 }
 
-func (l *Log) Initialize(setting *BTNodeCfg) {
-	l.Action.Initialize(setting)
-	l.info = setting.GetPropertyAsString("info")
+func (log *Log) Initialize(setting *BTNodeCfg) {
+	log.Action.Initialize(setting)
+	log.info = setting.GetPropertyAsString("info")
 }
 
-func (l *Log) OnTick(tick *Tick) b3.Status {
-	fmt.Println("log:", l.info)
-	return b3.SUCCESS
+func (log *Log) OnTick(tick *Tick) Status {
+	fmt.Println("log:", log.info)
+	return SUCCESS
 }

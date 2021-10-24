@@ -1,52 +1,26 @@
 package core
 
-import (
-	. "github.com/pangdogs/behavior3go/config"
-)
-
-// SubTree 子树，通过Name关联树ID查找
 type SubTree struct {
 	Action
 }
 
-func (st *SubTree) Initialize(setting *BTNodeCfg) {
-	st.Action.Initialize(setting)
-}
-
-/**
- *执行子树
- *使用sTree.Tick(tar, tick.Blackboard)的方法会导致每个树有自己的tick。
- *如果子树包含running状态，同时复用了子树会导致歧义。
- *改为只使用一个树，一个tick上下文。
-**/
 func (st *SubTree) OnTick(tick *Tick) Status {
-	//使用子树，必须先SetSubTreeLoadFunc
-	//子树可能没有加载上来，所以要延迟加载执行
-	sTree := subTreeLoadFunc(st.GetName())
-	if nil == sTree {
+	// 使用子树，必须先SetSubTreeLoadFunc
+	subTree := subTreeLoadFunc(st.GetName())
+	if nil == subTree {
 		return ERROR
 	}
 
-	if tick.GetTarget() == nil {
-		panic("SubTree tick.GetTarget() nil !")
-	}
-
-	//tar := tick.GetTarget()
-	//return sTree.Tick(tar, tick.Blackboard)
-
 	tick.pushSubtreeNode(st)
-	ret := sTree.GetRoot().Execute(tick)
+	ret := subTree.GetRoot().Execute(tick)
 	tick.popSubtreeNode()
-	return ret
-}
 
-func (st *SubTree) String() string {
-	return "SBT_" + st.GetTitle()
+	return ret
 }
 
 var subTreeLoadFunc func(string) *BehaviorTree
 
-// 获取子树的方法
-func SetSubTreeLoadFunc(f func(string) *BehaviorTree) {
-	subTreeLoadFunc = f
+// SetSubTreeLoadFunc 设置子树加载函数
+func SetSubTreeLoadFunc(fun func(string) *BehaviorTree) {
+	subTreeLoadFunc = fun
 }

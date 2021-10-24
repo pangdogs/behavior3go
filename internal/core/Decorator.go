@@ -1,25 +1,25 @@
 package core
 
 type IDecorator interface {
-	IBaseNode
-	SetChild(child IBaseNode)
-	GetChild() IBaseNode
+	Node
+	SetChild(child Node)
+	GetChild() Node
 }
 
 type Decorator struct {
 	BaseNode
 	BaseWorker
-	child IBaseNode
+	child Node
 }
 
-func (d *Decorator) Ctor() {
-	d.category = DECORATOR
+func (d *Decorator) GetCategory() Category {
+	return DECORATOR
 }
 
-func (d *Decorator) SetChild(child IBaseNode) {
+func (d *Decorator) SetChild(child Node) {
 	d.child = child
 }
 
-func (d *Decorator) GetChild() IBaseNode {
+func (d *Decorator) GetChild() Node {
 	return d.child
 }

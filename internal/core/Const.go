@@ -1,13 +1,12 @@
 package core
 
-// 常量定义
+// 节点类型名称
 const (
-	VERSION = "0.0.1" // 版本号
-
-	COMPOSITE_NAME = "composite" // 复合节点名称
-	DECORATOR_NAME = "decorator" // 装饰器节点名称
-	ACTION_NAME    = "action"    // 行为节点名称
-	CONDITION_NAME = "condition" // 条件节点名称
+	COMPOSITE_TAG = "composite"
+	DECORATOR_TAG = "decorator"
+	ACTION_TAG    = "action"
+	CONDITION_TAG = "condition"
+	TREE_TAG      = "tree"
 )
 
 // Category 节点类型
@@ -18,6 +17,7 @@ const (
 	DECORATOR                 // 装饰器节点
 	ACTION                    // 行为节点
 	CONDITION                 // 条件节点
+	TREE                      // 子树节点
 )
 
 // Status 返回值定义

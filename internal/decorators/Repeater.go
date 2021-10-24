@@ -1,75 +1,44 @@
 package decorators
 
 import (
-	b3 "github.com/pangdogs/behavior3go"
-	. "github.com/pangdogs/behavior3go/config"
-	. "github.com/pangdogs/behavior3go/core"
+	. "github.com/pangdogs/behavior3go/internal/config"
+	. "github.com/pangdogs/behavior3go/internal/core"
 )
 
-/**
- * Repeater is a decorator that repeats the tick signal until the child node
- * return `RUNNING` or `ERROR`. Optionally, a maximum number of repetitions
- * can be defined.
- *
- * @module b3
- * @class Repeater
- * @extends Decorator
-**/
 type Repeater struct {
 	Decorator
-	maxLoop int
+	maxLoop int64
 }
 
-/**
- * Initialization method.
- *
- * Settings parameters:
- *
- * - **milliseconds** (*Integer*) Maximum time, in milliseconds, a child
- *                                can execute.
- *
- * @method Initialize
- * @param {Object} settings Object with parameters.
- * @construCtor
-**/
-func (this *Repeater) Initialize(setting *BTNodeCfg) {
-	this.Decorator.Initialize(setting)
-	this.maxLoop = setting.GetPropertyAsInt("maxLoop")
-	if this.maxLoop < 1 {
-		panic("maxLoop parameter in MaxTime decorator is an obligatory parameter")
+func (repeater *Repeater) Initialize(setting *BTNodeCfg) {
+	repeater.Decorator.Initialize(setting)
+	repeater.maxLoop = setting.GetPropertyAsInt64("maxLoop")
+	if repeater.maxLoop < 1 {
+		panic("maxLoop parameter in Repeater decorator is an obligatory parameter")
 	}
 }
 
-/**
- * Open method.
- * @method open
- * @param {Tick} tick A tick instance.
-**/
-func (this *Repeater) OnOpen(tick *Tick) {
-	tick.Blackboard.Set("i", 0, tick.GetTree().GetID(), this.GetID())
+func (repeater *Repeater) OnOpen(tick *Tick) {
+	tick.Blackboard.Set("i", int64(0), tick.GetTree().GetID(), repeater.GetID())
 }
 
-/**
- * Tick method.
- * @method tick
- * @param {b3.Tick} tick A tick instance.
- * @return {Constant} A state constant.
-**/
-func (this *Repeater) OnTick(tick *Tick) b3.Status {
-	//fmt.Println("tick ", this.GetTitle())
-	if this.GetChild() == nil {
-		return b3.ERROR
+func (repeater *Repeater) OnTick(tick *Tick) Status {
+	if repeater.GetChild() == nil {
+		return ERROR
 	}
-	var i = tick.Blackboard.GetInt("i", tick.GetTree().GetID(), this.GetID())
-	var status = b3.SUCCESS
-	for this.maxLoop < 0 || i < this.maxLoop {
-		status = this.GetChild().Execute(tick)
-		if status == b3.SUCCESS || status == b3.FAILURE {
+
+	i := tick.Blackboard.GetInt64("i", tick.GetTree().GetID(), repeater.GetID())
+	status := SUCCESS
+
+	for repeater.maxLoop < 0 || i < repeater.maxLoop {
+		status = repeater.GetChild().Execute(tick)
+		if status == SUCCESS || status == FAILURE {
 			i++
 		} else {
 			break
 		}
 	}
-	tick.Blackboard.Set("i", i, tick.GetTree().GetID(), this.GetID())
+
+	tick.Blackboard.Set("i", i, tick.GetTree().GetID(), repeater.GetID())
 	return status
 }

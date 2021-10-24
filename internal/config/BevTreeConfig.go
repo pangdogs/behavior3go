@@ -9,35 +9,35 @@ import (
 
 // BTNodeCfg 行为树节点配置
 type BTNodeCfg struct {
-	Id           string                 `json:"id"`
-	Name         string                 `json:"name"`
-	CategoryName string                 `json:"category"`
-	Title        string                 `json:"title"`
-	Description  string                 `json:"description"`
-	Children     []string               `json:"children"`
-	Child        string                 `json:"child"`
-	Parameters   map[string]interface{} `json:"parameters"`
-	Properties   map[string]interface{} `json:"properties"`
+	ID          string                 `json:"id"`
+	Name        string                 `json:"name"`
+	CategoryTag string                 `json:"category"`
+	Title       string                 `json:"title"`
+	Description string                 `json:"description"`
+	Children    []string               `json:"children"`
+	Child       string                 `json:"child"`
+	Parameters  map[string]interface{} `json:"parameters"`
+	Properties  map[string]interface{} `json:"properties"`
 }
 
-func (btnc *BTNodeCfg) GetPropertyAsFloat64(name string) float64 {
-	v, ok := btnc.Properties[name]
+func (cfg *BTNodeCfg) GetPropertyAsFloat64(name string) float64 {
+	v, ok := cfg.Properties[name]
 	if !ok {
 		return 0
 	}
 	return v.(float64)
 }
 
-func (btnc *BTNodeCfg) GetPropertyAsInt64(name string) int64 {
-	v, ok := btnc.Properties[name]
+func (cfg *BTNodeCfg) GetPropertyAsInt64(name string) int64 {
+	v, ok := cfg.Properties[name]
 	if !ok {
 		return 0
 	}
 	return int64(v.(float64))
 }
 
-func (btnc *BTNodeCfg) GetPropertyAsBool(name string) bool {
-	v, ok := btnc.Properties[name]
+func (cfg *BTNodeCfg) GetPropertyAsBool(name string) bool {
+	v, ok := cfg.Properties[name]
 	if !ok {
 		return false
 	}
@@ -53,8 +53,8 @@ func (btnc *BTNodeCfg) GetPropertyAsBool(name string) bool {
 	return b
 }
 
-func (btnc *BTNodeCfg) GetPropertyAsString(name string) string {
-	v, ok := btnc.Properties[name]
+func (cfg *BTNodeCfg) GetPropertyAsString(name string) string {
+	v, ok := cfg.Properties[name]
 	if !ok {
 		return ""
 	}
@@ -68,7 +68,7 @@ type BTTreeCfg struct {
 	Description string                 `json:"description"`
 	Root        string                 `json:"root"`
 	Properties  map[string]interface{} `json:"properties"`
-	Nodes       map[string]BTNodeCfg   `json:"nodes"`
+	Nodes       map[string]*BTNodeCfg  `json:"nodes"`
 }
 
 // LoadTreeCfg 加载行为树

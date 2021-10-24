@@ -1,76 +1,44 @@
 package decorators
 
 import (
-	b3 "github.com/pangdogs/behavior3go"
-	. "github.com/pangdogs/behavior3go/config"
-	. "github.com/pangdogs/behavior3go/core"
+	. "github.com/pangdogs/behavior3go/internal/config"
+	. "github.com/pangdogs/behavior3go/internal/core"
 )
 
-/**
- * The MaxTime decorator limits the maximum time the node child can execute.
- * Notice that it does not interrupt the execution itself (i.e., the child
- * must be non-preemptive), it only interrupts the node after a `RUNNING`
- * status.
- *
- * @module b3
- * @class MaxTime
- * @extends Decorator
-**/
 type RepeatUntilFailure struct {
 	Decorator
-	maxLoop int
+	maxLoop int64
 }
 
-/**
- * Initialization method.
- *
- * Settings parameters:
- *
- * - **milliseconds** (*Integer*) Maximum time, in milliseconds, a child
- *                                can execute.
- *
- * @method Initialize
- * @param {Object} settings Object with parameters.
- * @construCtor
-**/
-func (this *RepeatUntilFailure) Initialize(setting *BTNodeCfg) {
-	this.Decorator.Initialize(setting)
-	this.maxLoop = setting.GetPropertyAsInt("maxLoop")
-	if this.maxLoop < 1 {
-		panic("maxLoop parameter in MaxTime decorator is an obligatory parameter")
+func (ruf *RepeatUntilFailure) Initialize(setting *BTNodeCfg) {
+	ruf.Decorator.Initialize(setting)
+	ruf.maxLoop = setting.GetPropertyAsInt64("maxLoop")
+	if ruf.maxLoop < 1 {
+		panic("maxLoop parameter in RepeatUntilFailure decorator is an obligatory parameter")
 	}
 }
 
-/**
- * Open method.
- * @method open
- * @param {Tick} tick A tick instance.
-**/
-func (this *RepeatUntilFailure) OnOpen(tick *Tick) {
-	tick.Blackboard.Set("i", 0, tick.GetTree().GetID(), this.GetID())
+func (ruf *RepeatUntilFailure) OnOpen(tick *Tick) {
+	tick.Blackboard.Set("i", int64(0), tick.GetTree().GetID(), ruf.GetID())
 }
 
-/**
- * Tick method.
- * @method tick
- * @param {b3.Tick} tick A tick instance.
- * @return {Constant} A state constant.
-**/
-func (this *RepeatUntilFailure) OnTick(tick *Tick) b3.Status {
-	if this.GetChild() == nil {
-		return b3.ERROR
+func (ruf *RepeatUntilFailure) OnTick(tick *Tick) Status {
+	if ruf.GetChild() == nil {
+		return ERROR
 	}
-	var i = tick.Blackboard.GetInt("i", tick.GetTree().GetID(), this.GetID())
-	var status = b3.ERROR
-	for this.maxLoop < 0 || i < this.maxLoop {
-		status = this.GetChild().Execute(tick)
-		if status == b3.SUCCESS {
+
+	i := tick.Blackboard.GetInt64("i", tick.GetTree().GetID(), ruf.GetID())
+	status := ERROR
+
+	for ruf.maxLoop < 0 || i < ruf.maxLoop {
+		status = ruf.GetChild().Execute(tick)
+		if status == SUCCESS {
 			i++
 		} else {
 			break
 		}
 	}
 
-	tick.Blackboard.Set("i", i, tick.GetTree().GetID(), this.GetID())
+	tick.Blackboard.Set("i", i, tick.GetTree().GetID(), ruf.GetID())
 	return status
 }

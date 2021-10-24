@@ -1,7 +1,7 @@
 package core
 
 type ICondition interface {
-	IBaseNode
+	Node
 }
 
 type Condition struct {
@@ -9,6 +9,6 @@ type Condition struct {
 	BaseWorker
 }
 
-func (c *Condition) Ctor() {
-	c.category = CONDITION
+func (c *Condition) GetCategory() Category {
+	return CONDITION
 }

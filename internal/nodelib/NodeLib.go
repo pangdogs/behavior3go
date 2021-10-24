@@ -1,7 +1,7 @@
-package behavior3go
+package nodelib
 
 import (
-	"fmt"
+	"errors"
 	. "github.com/pangdogs/behavior3go/internal/actions"
 	. "github.com/pangdogs/behavior3go/internal/composites"
 	. "github.com/pangdogs/behavior3go/internal/decorators"
@@ -54,7 +54,7 @@ func (lib *NodeLib) New(name string) (interface{}, error) {
 	if v, ok := lib.nodeMap[name]; ok {
 		return reflect.New(v).Interface(), nil
 	}
-	return nil, fmt.Errorf("no found node [%s]", name)
+	return nil, errors.New("no found node")
 }
 
 // Exist 节点是否存在

@@ -6,17 +6,16 @@ import (
 	"github.com/pangdogs/behavior3go/internal/config"
 	"github.com/pangdogs/behavior3go/internal/core"
 	. "github.com/pangdogs/behavior3go/internal/decorators"
-	"github.com/pangdogs/behavior3go/internal/nodelib"
 )
 
 type BehaviorTree = core.BehaviorTree
 
 var NewBevTree = core.NewBevTree
 
-type NodeLib = nodelib.NodeLib
+type NodeLib = core.NodeLib
 
 func NewNodeLib() *NodeLib {
-	nodeLib := nodelib.NewNodeLib()
+	nodeLib := core.NewNodeLib()
 
 	// 默认actions
 	nodeLib.Register("Error", &Error{})

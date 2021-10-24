@@ -1,4 +1,4 @@
-package nodelib
+package core
 
 import (
 	"errors"

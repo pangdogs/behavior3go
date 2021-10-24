@@ -3,7 +3,6 @@ package core
 import (
 	"fmt"
 	. "github.com/pangdogs/behavior3go/internal/config"
-	. "github.com/pangdogs/behavior3go/internal/nodelib"
 )
 
 type BehaviorTree struct {

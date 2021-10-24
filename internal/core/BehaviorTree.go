@@ -88,6 +88,7 @@ func (bt *BehaviorTree) Load(setting *BTTreeCfg, nodeLib *NodeLib) error {
 		}
 	}
 
+	bt.BTTreeCfg = setting
 	bt.root = nodes[setting.Root]
 
 	return nil

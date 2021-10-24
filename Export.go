@@ -58,6 +58,25 @@ type Blackboard = core.Blackboard
 
 var NewBlackboard = core.NewBlackboard
 
+type Category = core.Category
+
+const (
+	COMPOSITE = core.COMPOSITE
+	DECORATOR = core.DECORATOR
+	ACTION    = core.ACTION
+	CONDITION = core.CONDITION
+	TREE      = core.TREE
+)
+
+type Status = core.Status
+
+const (
+	SUCCESS = core.SUCCESS
+	FAILURE = core.FAILURE
+	RUNNING = core.RUNNING
+	ERROR   = core.ERROR
+)
+
 type BTNodeCfg = config.BTNodeCfg
 
 type BTTreeCfg = config.BTTreeCfg

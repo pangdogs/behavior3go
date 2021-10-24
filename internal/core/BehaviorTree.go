@@ -38,22 +38,31 @@ func (bt *BehaviorTree) SetDebug(debug interface{}) {
 	bt.debug = debug
 }
 
-func (bt *BehaviorTree) Load(cfg *BTTreeCfg, nodeLib *NodeLib) error {
+func (bt *BehaviorTree) Load(setting *BTTreeCfg, nodeLib *NodeLib) error {
 	nodes := make(map[string]Node)
 
 	// Create the node list (without connection between them)
-	for id, nodeCfg := range cfg.Nodes {
+	for id, nodeCfg := range setting.Nodes {
 		var node Node
 
 		switch nodeCfg.CategoryTag {
 		case TREE_TAG:
-			node = new(SubTree)
+			node = &SubTree{}
 		default:
 			if t, err := nodeLib.New(nodeCfg.Name); err == nil {
 				node = t.(Node)
 			} else {
 				return fmt.Errorf("new node %s failed, %v", id, err)
 			}
+		}
+
+		category, ok := CategoryTagToEnum[nodeCfg.CategoryTag]
+		if ok {
+			if node.GetCategory() != category {
+				return fmt.Errorf("new node %s failed, category %s invalid", id, nodeCfg.CategoryTag)
+			}
+		} else {
+			return fmt.Errorf("new node %s failed, category %s not found", id, nodeCfg.CategoryTag)
 		}
 
 		node.Initialize(nodeCfg)
@@ -63,7 +72,7 @@ func (bt *BehaviorTree) Load(cfg *BTTreeCfg, nodeLib *NodeLib) error {
 	}
 
 	// Connect the nodes
-	for id, nodeCfg := range cfg.Nodes {
+	for id, nodeCfg := range setting.Nodes {
 		node := nodes[id]
 
 		switch node.GetCategory() {
@@ -79,7 +88,7 @@ func (bt *BehaviorTree) Load(cfg *BTTreeCfg, nodeLib *NodeLib) error {
 		}
 	}
 
-	bt.root = nodes[cfg.Root]
+	bt.root = nodes[setting.Root]
 
 	return nil
 }

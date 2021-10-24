@@ -1,6 +1,6 @@
 package core
 
-// 节点类型名称
+// 节点类型标签
 const (
 	COMPOSITE_TAG = "composite"
 	DECORATOR_TAG = "decorator"
@@ -19,6 +19,14 @@ const (
 	CONDITION                 // 条件节点
 	TREE                      // 子树节点
 )
+
+var CategoryTagToEnum = map[string]Category{
+	COMPOSITE_TAG: COMPOSITE,
+	DECORATOR_TAG: DECORATOR,
+	ACTION_TAG:    ACTION,
+	CONDITION_TAG: CONDITION,
+	TREE_TAG:      TREE,
+}
 
 // Status 返回值定义
 type Status int8

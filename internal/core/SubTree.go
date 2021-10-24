@@ -4,6 +4,10 @@ type SubTree struct {
 	Action
 }
 
+func (st *SubTree) GetCategory() Category {
+	return TREE
+}
+
 func (st *SubTree) OnTick(tick *Tick) Status {
 	// 使用子树，必须先SetSubTreeLoadFunc
 	subTree := subTreeLoadFunc(st.GetName())

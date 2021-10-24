@@ -58,6 +58,14 @@ type Blackboard = core.Blackboard
 
 var NewBlackboard = core.NewBlackboard
 
+const (
+	COMPOSITE_TAG = core.COMPOSITE_TAG
+	DECORATOR_TAG = core.DECORATOR_TAG
+	ACTION_TAG    = core.ACTION_TAG
+	CONDITION_TAG = core.CONDITION_TAG
+	TREE_TAG      = core.TREE_TAG
+)
+
 type Category = core.Category
 
 const (
@@ -67,6 +75,10 @@ const (
 	CONDITION = core.CONDITION
 	TREE      = core.TREE
 )
+
+var CategoryTagToEnum = core.CategoryTagToEnum
+
+var CategoryEnumToTag = core.CategoryEnumToTag
 
 type Status = core.Status
 

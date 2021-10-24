@@ -28,6 +28,14 @@ var CategoryTagToEnum = map[string]Category{
 	TREE_TAG:      TREE,
 }
 
+var CategoryEnumToTag = map[Category]string{
+	COMPOSITE: COMPOSITE_TAG,
+	DECORATOR: DECORATOR_TAG,
+	ACTION:    ACTION_TAG,
+	CONDITION: CONDITION_TAG,
+	TREE:      TREE_TAG,
+}
+
 // Status 返回值定义
 type Status int8
 

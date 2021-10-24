@@ -19,8 +19,21 @@ func NewNodeLib() *NodeLib {
 }
 
 // Register 注册节点
-func (lib *NodeLib) Register(name string, c interface{}) {
-	lib.nodeMap[name] = reflect.TypeOf(c).Elem()
+func (lib *NodeLib) Register(name string, node interface{}) {
+	tfNode := reflect.TypeOf(node)
+
+label:
+	switch tfNode.Kind() {
+	case reflect.Struct:
+		break
+	case reflect.Ptr:
+		tfNode = tfNode.Elem()
+		goto label
+	default:
+		panic("node type invalid")
+	}
+
+	lib.nodeMap[name] = tfNode
 }
 
 // New 创建节点

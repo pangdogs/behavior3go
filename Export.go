@@ -56,6 +56,8 @@ var SetSubTreeLoadFunc = core.SetSubTreeLoadFunc
 
 type Blackboard = core.Blackboard
 
+var NewBlackboard = core.NewBlackboard
+
 type BTNodeCfg = config.BTNodeCfg
 
 type BTTreeCfg = config.BTTreeCfg

@@ -54,6 +54,8 @@ type SubTree = core.SubTree
 
 var SetSubTreeLoadFunc = core.SetSubTreeLoadFunc
 
+type Tick = core.Tick
+
 type Blackboard = core.Blackboard
 
 var NewBlackboard = core.NewBlackboard

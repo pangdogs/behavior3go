@@ -38,6 +38,14 @@ func (bt *BehaviorTree) SetDebug(debug interface{}) {
 	bt.debug = debug
 }
 
+func (bt *BehaviorTree) GetDebug() interface{} {
+	return bt.debug
+}
+
+func (bt *BehaviorTree) GetSetting() *BTTreeCfg {
+	return bt.BTTreeCfg
+}
+
 func (bt *BehaviorTree) Load(setting *BTTreeCfg, nodeLib *NodeLib) error {
 	nodes := make(map[string]Node)
 
@@ -65,9 +73,10 @@ func (bt *BehaviorTree) Load(setting *BTTreeCfg, nodeLib *NodeLib) error {
 			return fmt.Errorf("new node %s failed, category %s not found", id, nodeCfg.CategoryTag)
 		}
 
-		node.Initialize(nodeCfg)
 		node.SetNode(node.(Node))
 		node.SetWorker(node.(Worker))
+		node._setSetting(nodeCfg)
+		node.Initialize(nodeCfg)
 		nodes[id] = node
 	}
 

@@ -5,7 +5,7 @@ import (
 )
 
 type Node interface {
-	Initialize(params *BTNodeCfg)
+	Initialize(setting *BTNodeCfg)
 	GetCategory() Category
 	GetID() string
 	GetName() string
@@ -14,6 +14,8 @@ type Node interface {
 	GetNode() Node
 	SetWorker(worker Worker)
 	GetWorker() Worker
+	_setSetting(setting *BTNodeCfg)
+	GetSetting() *BTNodeCfg
 	Execute(tick *Tick) Status
 	_execute(tick *Tick) Status
 	_enter(tick *Tick)
@@ -30,7 +32,6 @@ type BaseNode struct {
 }
 
 func (bn *BaseNode) Initialize(setting *BTNodeCfg) {
-	bn.BTNodeCfg = setting
 }
 
 func (bn *BaseNode) GetID() string {
@@ -59,6 +60,14 @@ func (bn *BaseNode) SetWorker(worker Worker) {
 
 func (bn *BaseNode) GetWorker() Worker {
 	return bn.Worker
+}
+
+func (bn *BaseNode) _setSetting(setting *BTNodeCfg) {
+	bn.BTNodeCfg = setting
+}
+
+func (bn *BaseNode) GetSetting() *BTNodeCfg {
+	return bn.BTNodeCfg
 }
 
 func (bn *BaseNode) Execute(tick *Tick) Status {

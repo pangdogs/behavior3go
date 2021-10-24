@@ -12,6 +12,14 @@ type BehaviorTree = core.BehaviorTree
 
 var NewBevTree = core.NewBevTree
 
+func NewBevTreeEx(setting *BTTreeCfg, nodeLib *NodeLib) (*BehaviorTree, error) {
+	bevTree := core.NewBevTree()
+	if err := bevTree.Load(setting, nodeLib); err != nil {
+		return nil, err
+	}
+	return bevTree, nil
+}
+
 type NodeLib = core.NodeLib
 
 func NewNodeLib() *NodeLib {

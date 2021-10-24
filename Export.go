@@ -22,7 +22,9 @@ func NewBevTreeEx(setting *BTTreeCfg, nodeLib *NodeLib) (*BehaviorTree, error) {
 
 type NodeLib = core.NodeLib
 
-func NewNodeLib() *NodeLib {
+var NewNodeLib = core.NewNodeLib
+
+func NewNodeLibEx() *NodeLib {
 	nodeLib := core.NewNodeLib()
 
 	// 默认actions

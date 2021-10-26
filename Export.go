@@ -68,6 +68,8 @@ type Tick = core.Tick
 
 type Blackboard = core.Blackboard
 
+const Global = uintptr(0)
+
 var NewBlackboard = core.NewBlackboard
 
 const (

@@ -116,7 +116,12 @@ func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) Status 
 	if ok {
 		lastOpenNodes = v.([]Node)
 	}
-	currOpenNodes := append([]Node{}, tick.openNodes...)
+
+	var currOpenNodes []Node
+	if count := len(tick.openNodes); count > 0 {
+		currOpenNodes = make([]Node, count)
+		copy(currOpenNodes, tick.openNodes)
+	}
 
 	// does not close if it is still open in bt tick
 	start := 0

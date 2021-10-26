@@ -127,7 +127,7 @@ func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) Status 
 	start := 0
 	for i := 0; i < MinInt(len(lastOpenNodes), len(currOpenNodes)); i++ {
 		start = i + 1
-		if lastOpenNodes[i] != currOpenNodes[i] {
+		if lastOpenNodes[i].GetHandle() != currOpenNodes[i].GetHandle() {
 			break
 		}
 	}

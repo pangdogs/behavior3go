@@ -20,16 +20,16 @@ func (b *Blackboard) GetTick() *Tick {
 }
 
 func (b *Blackboard) Set(stack Stack, field string, value interface{}) {
-	b.memory[stack.ToString()+field] = value
+	b.memory[stack.toString()+field] = value
 }
 
 func (b *Blackboard) Get(stack Stack, field string) (interface{}, bool) {
-	v, ok := b.memory[stack.ToString()+field]
+	v, ok := b.memory[stack.toString()+field]
 	return v, ok
 }
 
 func (b *Blackboard) Remove(stack Stack, field string) {
-	delete(b.memory, stack.ToString()+field)
+	delete(b.memory, stack.toString()+field)
 }
 
 func (b *Blackboard) GetFloat64(stack Stack, field string) float64 {

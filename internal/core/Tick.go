@@ -25,11 +25,31 @@ func (stack *Stack) popHandle() {
 	}
 }
 
-func (stack *Stack) ToString() string {
+func (stack *Stack) toString() string {
 	if len(*stack) <= 0 {
 		return ""
 	}
 	return *(*string)(unsafe.Pointer(stack))
+}
+
+func (stack *Stack) Copy() Stack {
+	t := make(Stack, len(*stack))
+	copy(t, *stack)
+	return t
+}
+
+func (stack *Stack) Equal(other Stack) bool {
+	if len(*stack) != len(other) {
+		return false
+	}
+
+	for i, b := range *stack {
+		if b != other[i] {
+			return false
+		}
+	}
+
+	return true
 }
 
 type Tick struct {

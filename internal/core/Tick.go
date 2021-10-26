@@ -1,35 +1,36 @@
 package core
 
 import (
-	"unsafe"
+	"strings"
 )
 
-type Stack []byte
+type Stack []uintptr
 
 func (stack *Stack) pushHandle(handle uintptr) {
-	*stack = append(*stack,
-		byte((handle>>56)&uintptr(0xff)),
-		byte((handle>>48)&uintptr(0xff)),
-		byte((handle>>40)&uintptr(0xff)),
-		byte((handle>>32)&uintptr(0xff)),
-		byte((handle>>24)&uintptr(0xff)),
-		byte((handle>>16)&uintptr(0xff)),
-		byte((handle>>8)&uintptr(0xff)),
-		byte(handle&uintptr(0xff)),
-	)
+	*stack = append(*stack, handle)
 }
 
 func (stack *Stack) popHandle() {
-	if count := len(*stack); count >= 8 {
-		*stack = (*stack)[:count-8]
+	if count := len(*stack); count > 0 {
+		*stack = (*stack)[:count-1]
 	}
 }
 
 func (stack *Stack) toString() string {
-	if len(*stack) <= 0 {
-		return ""
+	b := strings.Builder{}
+
+	for _, handle := range *stack {
+		b.WriteByte(byte((handle >> 56) & uintptr(0xff)))
+		b.WriteByte(byte((handle >> 48) & uintptr(0xff)))
+		b.WriteByte(byte((handle >> 40) & uintptr(0xff)))
+		b.WriteByte(byte((handle >> 32) & uintptr(0xff)))
+		b.WriteByte(byte((handle >> 24) & uintptr(0xff)))
+		b.WriteByte(byte((handle >> 16) & uintptr(0xff)))
+		b.WriteByte(byte((handle >> 8) & uintptr(0xff)))
+		b.WriteByte(byte(handle & uintptr(0xff)))
 	}
-	return *(*string)(unsafe.Pointer(stack))
+
+	return b.String()
 }
 
 func (stack *Stack) Copy() Stack {

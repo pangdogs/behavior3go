@@ -103,7 +103,7 @@ func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) Status 
 	tick.Initialize(blackboard, bt, target)
 
 	/* TICK NODE */
-	state := bt.root.Execute(tick)
+	state := bt.GetRoot().Execute(tick)
 
 	/* CLOSE NODES FROM LAST TICK, IF NEEDED */
 	var lastOpenNodes []Node

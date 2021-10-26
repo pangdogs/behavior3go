@@ -19,7 +19,7 @@ func (rus *RepeatUntilSuccess) Initialize(setting *BTNodeCfg) {
 }
 
 func (rus *RepeatUntilSuccess) OnOpen(tick *Tick) {
-	tick.GetBlackboard().Set(tick.GetStack(), "i", int64(0))
+	tick.GetBlackboard().Set(rus.GetHandle(), "i", int64(0))
 }
 
 func (rus *RepeatUntilSuccess) OnTick(tick *Tick) Status {
@@ -27,7 +27,7 @@ func (rus *RepeatUntilSuccess) OnTick(tick *Tick) Status {
 		return ERROR
 	}
 
-	i := tick.GetBlackboard().GetInt64(tick.GetStack(), "i")
+	i := tick.GetBlackboard().GetInt64(rus.GetHandle(), "i")
 	status := ERROR
 
 	for rus.maxLoop < 0 || i < rus.maxLoop {
@@ -39,6 +39,6 @@ func (rus *RepeatUntilSuccess) OnTick(tick *Tick) Status {
 		}
 	}
 
-	tick.GetBlackboard().Set(tick.GetStack(), "i", i)
+	tick.GetBlackboard().Set(rus.GetHandle(), "i", i)
 	return status
 }

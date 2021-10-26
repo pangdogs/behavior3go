@@ -19,7 +19,7 @@ func (repeater *Repeater) Initialize(setting *BTNodeCfg) {
 }
 
 func (repeater *Repeater) OnOpen(tick *Tick) {
-	tick.GetBlackboard().Set(tick.GetStack(), "i", int64(0))
+	tick.GetBlackboard().Set(repeater.GetHandle(), "i", int64(0))
 }
 
 func (repeater *Repeater) OnTick(tick *Tick) Status {
@@ -27,7 +27,7 @@ func (repeater *Repeater) OnTick(tick *Tick) Status {
 		return ERROR
 	}
 
-	i := tick.GetBlackboard().GetInt64(tick.GetStack(), "i")
+	i := tick.GetBlackboard().GetInt64(repeater.GetHandle(), "i")
 	status := SUCCESS
 
 	for repeater.maxLoop < 0 || i < repeater.maxLoop {
@@ -39,6 +39,6 @@ func (repeater *Repeater) OnTick(tick *Tick) Status {
 		}
 	}
 
-	tick.GetBlackboard().Set(tick.GetStack(), "i", i)
+	tick.GetBlackboard().Set(repeater.GetHandle(), "i", i)
 	return status
 }

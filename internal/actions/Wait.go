@@ -18,12 +18,12 @@ func (w *Wait) Initialize(setting *BTNodeCfg) {
 
 func (w *Wait) OnOpen(tick *Tick) {
 	startTime := time.Now().UnixNano() / 1000000
-	tick.GetBlackboard().Set(tick.GetStack(), "startTime", startTime)
+	tick.GetBlackboard().Set(w.GetHandle(), "startTime", startTime)
 }
 
 func (w *Wait) OnTick(tick *Tick) Status {
 	currTime := time.Now().UnixNano() / 1000000
-	startTime := tick.GetBlackboard().GetInt64(tick.GetStack(), "startTime")
+	startTime := tick.GetBlackboard().GetInt64(w.GetHandle(), "startTime")
 
 	if currTime-startTime > w.endTime {
 		return SUCCESS

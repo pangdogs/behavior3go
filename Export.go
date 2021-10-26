@@ -66,10 +66,6 @@ var SetSubTreeLoadFunc = core.SetSubTreeLoadFunc
 
 type Tick = core.Tick
 
-type Stack = core.Stack
-
-var Global = core.Stack{}
-
 type Blackboard = core.Blackboard
 
 var NewBlackboard = core.NewBlackboard

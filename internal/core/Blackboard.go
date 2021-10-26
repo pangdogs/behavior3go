@@ -1,12 +1,13 @@
 package core
 
-type Scope struct {
-	stack, field string
+type MemKey struct {
+	handle uintptr
+	field  string
 }
 
 type Blackboard struct {
 	tick   Tick
-	memory map[Scope]interface{}
+	memory map[MemKey]interface{}
 }
 
 func NewBlackboard() *Blackboard {
@@ -16,61 +17,61 @@ func NewBlackboard() *Blackboard {
 }
 
 func (b *Blackboard) Initialize() {
-	b.memory = make(map[Scope]interface{})
+	b.memory = make(map[MemKey]interface{})
 }
 
 func (b *Blackboard) GetTick() *Tick {
 	return &b.tick
 }
 
-func (b *Blackboard) Set(stack Stack, field string, value interface{}) {
-	b.memory[Scope{
-		stack: stack.toString(),
-		field: field,
+func (b *Blackboard) Set(handle uintptr, field string, value interface{}) {
+	b.memory[MemKey{
+		handle: handle,
+		field:  field,
 	}] = value
 }
 
-func (b *Blackboard) Get(stack Stack, field string) (interface{}, bool) {
-	v, ok := b.memory[Scope{
-		stack: stack.toString(),
-		field: field,
+func (b *Blackboard) Get(handle uintptr, field string) (interface{}, bool) {
+	v, ok := b.memory[MemKey{
+		handle: handle,
+		field:  field,
 	}]
 	return v, ok
 }
 
-func (b *Blackboard) Remove(stack Stack, field string) {
-	delete(b.memory, Scope{
-		stack: stack.toString(),
-		field: field,
+func (b *Blackboard) Remove(handle uintptr, field string) {
+	delete(b.memory, MemKey{
+		handle: handle,
+		field:  field,
 	})
 }
 
-func (b *Blackboard) GetFloat64(stack Stack, field string) float64 {
-	v, ok := b.Get(stack, field)
+func (b *Blackboard) GetFloat64(handle uintptr, field string) float64 {
+	v, ok := b.Get(handle, field)
 	if !ok {
 		return 0
 	}
 	return v.(float64)
 }
 
-func (b *Blackboard) GetInt64(stack Stack, field string) int64 {
-	v, ok := b.Get(stack, field)
+func (b *Blackboard) GetInt64(handle uintptr, field string) int64 {
+	v, ok := b.Get(handle, field)
 	if !ok {
 		return 0
 	}
 	return v.(int64)
 }
 
-func (b *Blackboard) GetBool(stack Stack, field string) bool {
-	v, ok := b.Get(stack, field)
+func (b *Blackboard) GetBool(handle uintptr, field string) bool {
+	v, ok := b.Get(handle, field)
 	if !ok {
 		return false
 	}
 	return v.(bool)
 }
 
-func (b *Blackboard) GetString(stack Stack, field string) string {
-	v, ok := b.Get(stack, field)
+func (b *Blackboard) GetString(handle uintptr, field string) string {
+	v, ok := b.Get(handle, field)
 	if !ok {
 		return ""
 	}

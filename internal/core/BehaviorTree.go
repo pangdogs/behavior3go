@@ -3,6 +3,7 @@ package core
 import (
 	"fmt"
 	. "github.com/pangdogs/behavior3go/internal/config"
+	"unsafe"
 )
 
 type BehaviorTree struct {
@@ -34,6 +35,10 @@ func (bt *BehaviorTree) GetRoot() Node {
 
 func (bt *BehaviorTree) GetSetting() *BTTreeCfg {
 	return bt.BTTreeCfg
+}
+
+func (bt *BehaviorTree) GetHandle() uintptr {
+	return uintptr(unsafe.Pointer(bt))
 }
 
 func (bt *BehaviorTree) Load(setting *BTTreeCfg, nodeLib *NodeLib) error {
@@ -107,7 +112,7 @@ func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) Status 
 
 	/* CLOSE NODES FROM LAST TICK, IF NEEDED */
 	var lastOpenNodes []Node
-	v, ok := blackboard.Get(tick.GetStack(), "openNodes")
+	v, ok := blackboard.Get(bt.GetHandle(), "openNodes")
 	if ok {
 		lastOpenNodes = v.([]Node)
 	}
@@ -128,7 +133,7 @@ func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) Status 
 	}
 
 	/* POPULATE BLACKBOARD */
-	blackboard.Set(tick.GetStack(), "openNodes", currOpenNodes)
+	blackboard.Set(bt.GetHandle(), "openNodes", currOpenNodes)
 
 	return state
 }

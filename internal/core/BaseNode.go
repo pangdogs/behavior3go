@@ -15,7 +15,7 @@ type Node interface {
 	GetNode() Node
 	SetWorker(worker Worker)
 	GetWorker() Worker
-	getHandle() uintptr
+	GetHandle() uintptr
 	setSetting(setting *BTNodeCfg)
 	GetSetting() *BTNodeCfg
 	Execute(tick *Tick) Status
@@ -64,7 +64,7 @@ func (bn *BaseNode) GetWorker() Worker {
 	return bn.Worker
 }
 
-func (bn *BaseNode) getHandle() uintptr {
+func (bn *BaseNode) GetHandle() uintptr {
 	return uintptr(unsafe.Pointer(bn))
 }
 
@@ -85,7 +85,7 @@ func (bn *BaseNode) _execute(tick *Tick) Status {
 	bn._enter(tick)
 
 	// OPEN
-	if !tick.GetBlackboard().GetBool(tick.GetStack(), "isOpen") {
+	if !tick.GetBlackboard().GetBool(bn.GetHandle(), "isOpen") {
 		bn._open(tick)
 	}
 
@@ -110,7 +110,7 @@ func (bn *BaseNode) _enter(tick *Tick) {
 
 func (bn *BaseNode) _open(tick *Tick) {
 	tick.openNode(bn.GetNode())
-	tick.GetBlackboard().Set(tick.GetStack(), "isOpen", true)
+	tick.GetBlackboard().Set(bn.GetHandle(), "isOpen", true)
 	bn.OnOpen(tick)
 }
 
@@ -120,7 +120,7 @@ func (bn *BaseNode) _tick(tick *Tick) Status {
 }
 
 func (bn *BaseNode) _close(tick *Tick) {
-	tick.GetBlackboard().Set(tick.GetStack(), "isOpen", false)
+	tick.GetBlackboard().Set(bn.GetHandle(), "isOpen", false)
 	tick.closeNode(bn.GetNode())
 	bn.OnClose(tick)
 }

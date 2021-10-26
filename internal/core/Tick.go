@@ -1,17 +1,23 @@
 package core
 
+import "time"
+
 type Tick struct {
 	blackboard       *Blackboard
 	bevTree          *BehaviorTree
 	target           interface{}
+	enableVT         bool
+	virtualTime      time.Duration
 	openNodes        []Node
 	openSubtreeNodes []*SubTree
 }
 
-func (t *Tick) Initialize(blackboard *Blackboard, bevTree *BehaviorTree, target interface{}) {
+func (t *Tick) Initialize(blackboard *Blackboard, bevTree *BehaviorTree, target interface{}, enableVT bool, virtualTime time.Duration) {
 	t.blackboard = blackboard
 	t.bevTree = bevTree
 	t.target = target
+	t.enableVT = enableVT
+	t.virtualTime = virtualTime
 	t.openNodes = t.openNodes[:0]
 	t.openSubtreeNodes = t.openSubtreeNodes[:0]
 }
@@ -26,6 +32,22 @@ func (t *Tick) GetBevTree() *BehaviorTree {
 
 func (t *Tick) GetTarget() interface{} {
 	return t.target
+}
+
+func (t *Tick) GetEnableVT() bool {
+	return t.enableVT
+}
+
+func (t *Tick) GetVirtualTime() time.Duration {
+	return t.virtualTime
+}
+
+func (t *Tick) GetNowTime() int64 {
+	if t.enableVT {
+		return int64(t.virtualTime / time.Millisecond)
+	} else {
+		return time.Now().UnixNano() / int64(time.Millisecond)
+	}
 }
 
 func (t *Tick) enterNode(node Node) {

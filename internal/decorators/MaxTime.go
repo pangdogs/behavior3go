@@ -3,7 +3,6 @@ package decorators
 import (
 	. "github.com/pangdogs/behavior3go/internal/config"
 	. "github.com/pangdogs/behavior3go/internal/core"
-	"time"
 )
 
 type MaxTime struct {
@@ -20,7 +19,7 @@ func (mt *MaxTime) Initialize(setting *BTNodeCfg) {
 }
 
 func (mt *MaxTime) OnOpen(tick *Tick) {
-	startTime := time.Now().UnixNano() / 1000000
+	startTime := tick.GetNowTime()
 	tick.GetBlackboard().Set(mt.GetHandle(), "startTime", startTime)
 }
 
@@ -29,8 +28,9 @@ func (mt *MaxTime) OnTick(tick *Tick) Status {
 		return ERROR
 	}
 
-	currTime := time.Now().UnixNano() / 1000000
+	currTime := tick.GetNowTime()
 	startTime := tick.GetBlackboard().GetInt64(mt.GetHandle(), "startTime")
+
 	status := mt.GetChild().Execute(tick)
 
 	if currTime-startTime > mt.maxTime {

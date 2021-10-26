@@ -3,6 +3,7 @@ package core
 import (
 	"fmt"
 	. "github.com/pangdogs/behavior3go/internal/config"
+	"time"
 	"unsafe"
 )
 
@@ -98,14 +99,14 @@ func (bt *BehaviorTree) Load(setting *BTTreeCfg, nodeLib *NodeLib) error {
 	return nil
 }
 
-func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) Status {
+func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard, enableVT bool, virtualTime time.Duration) Status {
 	if blackboard == nil {
 		return ERROR
 	}
 
 	/* CREATE A TICK OBJECT */
 	tick := blackboard.GetTick()
-	tick.Initialize(blackboard, bt, target)
+	tick.Initialize(blackboard, bt, target, enableVT, virtualTime)
 
 	/* TICK NODE */
 	state := bt.GetRoot().Execute(tick)

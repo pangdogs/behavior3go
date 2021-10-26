@@ -6,6 +6,25 @@ import (
 
 type Stack []byte
 
+func (stack *Stack) pushHandle(handle uintptr) {
+	*stack = append(*stack,
+		byte((handle>>56)&uintptr(0xff)),
+		byte((handle>>48)&uintptr(0xff)),
+		byte((handle>>40)&uintptr(0xff)),
+		byte((handle>>32)&uintptr(0xff)),
+		byte((handle>>24)&uintptr(0xff)),
+		byte((handle>>16)&uintptr(0xff)),
+		byte((handle>>8)&uintptr(0xff)),
+		byte(handle&uintptr(0xff)),
+	)
+}
+
+func (stack *Stack) popHandle() {
+	if count := len(*stack); count >= 8 {
+		*stack = (*stack)[:count-8]
+	}
+}
+
 func (stack *Stack) ToString() string {
 	if len(*stack) <= 0 {
 		return ""
@@ -47,18 +66,20 @@ func (t *Tick) GetStack() Stack {
 	return t.stack
 }
 
+func (t *Tick) GetLastSubTreeStack() Stack {
+	subTreeNode := t.getLastSubTreeNode()
+	if subTreeNode == nil {
+		return Stack{}
+	}
+
+	var stack Stack
+	stack.pushHandle(subTreeNode.getHandle())
+
+	return stack
+}
+
 func (t *Tick) enterNode(node Node) {
-	handle := node.getHandle()
-	t.stack = append(t.stack,
-		byte((handle>>56)&uintptr(0xff)),
-		byte((handle>>48)&uintptr(0xff)),
-		byte((handle>>40)&uintptr(0xff)),
-		byte((handle>>32)&uintptr(0xff)),
-		byte((handle>>24)&uintptr(0xff)),
-		byte((handle>>16)&uintptr(0xff)),
-		byte((handle>>8)&uintptr(0xff)),
-		byte(handle&uintptr(0xff)),
-	)
+	t.stack.pushHandle(node.getHandle())
 	t.openNodes = append(t.openNodes, node)
 }
 
@@ -69,12 +90,10 @@ func (t *Tick) tickNode(node Node) {
 }
 
 func (t *Tick) closeNode(node Node) {
-	if count := len(t.stack); count >= 8 {
-		t.stack = t.stack[:count-8]
-	}
 	if count := len(t.openNodes); count > 0 {
 		t.openNodes = t.openNodes[:count-1]
 	}
+	t.stack.popHandle()
 }
 
 func (t *Tick) exitNode(node Node) {
@@ -88,4 +107,11 @@ func (t *Tick) popSubTreeNode() {
 	if count := len(t.openSubtreeNodes); count > 0 {
 		t.openSubtreeNodes = t.openSubtreeNodes[:count-1]
 	}
+}
+
+func (t *Tick) getLastSubTreeNode() *SubTree {
+	if count := len(t.openSubtreeNodes); count > 0 {
+		return t.openSubtreeNodes[count-1]
+	}
+	return nil
 }

@@ -21,7 +21,7 @@ func (mt *MaxTime) Initialize(setting *BTNodeCfg) {
 
 func (mt *MaxTime) OnOpen(tick *Tick) {
 	startTime := time.Now().UnixNano() / 1000000
-	tick.Blackboard.Set("startTime", startTime, tick.GetTree().GetID(), mt.GetID())
+	tick.GetBlackboard().Set(tick.GetStack(), "startTime", startTime)
 }
 
 func (mt *MaxTime) OnTick(tick *Tick) Status {
@@ -30,7 +30,7 @@ func (mt *MaxTime) OnTick(tick *Tick) Status {
 	}
 
 	currTime := time.Now().UnixNano() / 1000000
-	startTime := tick.Blackboard.GetInt64("startTime", tick.GetTree().GetID(), mt.GetID())
+	startTime := tick.GetBlackboard().GetInt64(tick.GetStack(), "startTime")
 	status := mt.GetChild().Execute(tick)
 
 	if currTime-startTime > mt.maxTime {

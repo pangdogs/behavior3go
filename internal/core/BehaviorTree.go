@@ -7,8 +7,7 @@ import (
 
 type BehaviorTree struct {
 	*BTTreeCfg
-	root  Node
-	debug interface{}
+	root Node
 }
 
 func NewBevTree() *BehaviorTree {
@@ -19,7 +18,6 @@ func NewBevTree() *BehaviorTree {
 
 func (bt *BehaviorTree) Initialize() {
 	bt.root = nil
-	bt.debug = nil
 }
 
 func (bt *BehaviorTree) GetID() string {
@@ -32,14 +30,6 @@ func (bt *BehaviorTree) GetTitle() string {
 
 func (bt *BehaviorTree) GetRoot() Node {
 	return bt.root
-}
-
-func (bt *BehaviorTree) SetDebug(debug interface{}) {
-	bt.debug = debug
-}
-
-func (bt *BehaviorTree) GetDebug() interface{} {
-	return bt.debug
 }
 
 func (bt *BehaviorTree) GetSetting() *BTTreeCfg {
@@ -75,7 +65,7 @@ func (bt *BehaviorTree) Load(setting *BTTreeCfg, nodeLib *NodeLib) error {
 
 		node.SetNode(node.(Node))
 		node.SetWorker(node.(Worker))
-		node._setSetting(nodeCfg)
+		node.setSetting(nodeCfg)
 		node.Initialize(nodeCfg)
 		nodes[id] = node
 	}
@@ -109,19 +99,19 @@ func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) Status 
 	}
 
 	/* CREATE A TICK OBJECT */
-	tick := NewTick()
-	tick.debug = bt.debug
-	tick.target = target
-	tick.Blackboard = blackboard
-	tick.tree = bt
+	tick := blackboard.GetTick()
+	tick.Initialize(blackboard, bt, target)
 
 	/* TICK NODE */
-	var state = bt.root._execute(tick)
+	state := bt.root.Execute(tick)
 
 	/* CLOSE NODES FROM LAST TICK, IF NEEDED */
-	var lastOpenNodes = blackboard._getTreeData(bt.GetID()).OpenNodes
-	var currOpenNodes []Node
-	currOpenNodes = append(currOpenNodes, tick._openNodes...)
+	var lastOpenNodes []Node
+	v, ok := blackboard.Get(tick.GetStack(), "openNodes")
+	if ok {
+		lastOpenNodes = v.([]Node)
+	}
+	currOpenNodes := append([]Node{}, tick.openNodes...)
 
 	// does not close if it is still open in bt tick
 	start := 0
@@ -138,8 +128,7 @@ func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard) Status 
 	}
 
 	/* POPULATE BLACKBOARD */
-	blackboard._getTreeData(bt.GetID()).OpenNodes = currOpenNodes
-	blackboard.SetTree("nodeCount", tick._nodeCount, bt.GetID())
+	blackboard.Set(tick.GetStack(), "openNodes", currOpenNodes)
 
 	return state
 }

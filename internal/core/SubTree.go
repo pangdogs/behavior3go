@@ -10,14 +10,14 @@ func (st *SubTree) GetCategory() Category {
 
 func (st *SubTree) OnTick(tick *Tick) Status {
 	// 使用子树，必须先SetSubTreeLoadFunc
-	subTree := subTreeLoadFunc(st.GetName())
-	if nil == subTree {
+	subBevTree := subTreeLoadFunc(st.GetName())
+	if subBevTree == nil {
 		return ERROR
 	}
 
-	tick.pushSubtreeNode(st)
-	ret := subTree.GetRoot().Execute(tick)
-	tick.popSubtreeNode()
+	tick.pushSubTreeNode(st)
+	ret := subBevTree.GetRoot().Execute(tick)
+	tick.popSubTreeNode()
 
 	return ret
 }

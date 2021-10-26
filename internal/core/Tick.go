@@ -1,85 +1,91 @@
 package core
 
+import (
+	"unsafe"
+)
+
+type Stack []byte
+
+func (stack *Stack) ToString() string {
+	if len(*stack) <= 0 {
+		return ""
+	}
+	return *(*string)(unsafe.Pointer(stack))
+}
+
 type Tick struct {
-	tree              *BehaviorTree
-	debug             interface{}
-	target            interface{}
-	Blackboard        *Blackboard
-	_openNodes        []Node
-	_openSubtreeNodes []*SubTree
-	_nodeCount        int
+	blackboard       *Blackboard
+	bevTree          *BehaviorTree
+	target           interface{}
+	stack            Stack
+	openNodes        []Node
+	openSubtreeNodes []*SubTree
 }
 
-func NewTick() *Tick {
-	tick := &Tick{}
-	tick.Initialize()
-	return tick
+func (t *Tick) Initialize(blackboard *Blackboard, bevTree *BehaviorTree, target interface{}) {
+	t.blackboard = blackboard
+	t.bevTree = bevTree
+	t.target = target
+	t.stack = t.stack[:0]
+	t.openNodes = t.openNodes[:0]
+	t.openSubtreeNodes = t.openSubtreeNodes[:0]
 }
 
-func (t *Tick) Initialize() {
-	// set by BehaviorTree
-	t.tree = nil
-	t.debug = nil
-	t.target = nil
-	t.Blackboard = nil
-
-	// updated during the tick signal
-	t._openNodes = t._openNodes[:0]
-	t._openSubtreeNodes = t._openSubtreeNodes[:0]
-	t._nodeCount = 0
+func (t *Tick) GetBlackboard() *Blackboard {
+	return t.blackboard
 }
 
-func (t *Tick) GetTree() *BehaviorTree {
-	return t.tree
-}
-
-func (t *Tick) _enterNode(node Node) {
-	t._nodeCount++
-	t._openNodes = append(t._openNodes, node)
-
-	// TODO: call debug here
-}
-
-func (t *Tick) _openNode(node Node) {
-	// TODO: call debug here
-}
-
-func (t *Tick) _tickNode(node Node) {
-	// TODO: call debug here
-}
-
-func (t *Tick) _closeNode(node Node) {
-	// TODO: call debug here
-
-	count := len(t._openNodes)
-	if count > 0 {
-		t._openNodes = t._openNodes[:count-1]
-	}
-}
-
-func (t *Tick) pushSubtreeNode(node *SubTree) {
-	t._openSubtreeNodes = append(t._openSubtreeNodes, node)
-}
-
-func (t *Tick) popSubtreeNode() {
-	count := len(t._openSubtreeNodes)
-	if count > 0 {
-		t._openSubtreeNodes = t._openSubtreeNodes[:count-1]
-	}
-}
-
-func (t *Tick) GetLastSubTree() *SubTree {
-	count := len(t._openSubtreeNodes)
-	if count > 0 {
-		return t._openSubtreeNodes[count-1]
-	}
-	return nil
-}
-
-func (t *Tick) _exitNode(node Node) {
-	// TODO: call debug here
+func (t *Tick) GetBevTree() *BehaviorTree {
+	return t.bevTree
 }
 
 func (t *Tick) GetTarget() interface{} {
 	return t.target
+}
+
+func (t *Tick) GetStack() Stack {
+	return t.stack
+}
+
+func (t *Tick) enterNode(node Node) {
+	handle := node.getHandle()
+	t.stack = append(t.stack,
+		byte((handle>>56)&uintptr(0xff)),
+		byte((handle>>48)&uintptr(0xff)),
+		byte((handle>>40)&uintptr(0xff)),
+		byte((handle>>32)&uintptr(0xff)),
+		byte((handle>>24)&uintptr(0xff)),
+		byte((handle>>16)&uintptr(0xff)),
+		byte((handle>>8)&uintptr(0xff)),
+		byte(handle&uintptr(0xff)),
+	)
+	t.openNodes = append(t.openNodes, node)
+}
+
+func (t *Tick) openNode(node Node) {
+}
+
+func (t *Tick) tickNode(node Node) {
+}
+
+func (t *Tick) closeNode(node Node) {
+	if count := len(t.stack); count >= 8 {
+		t.stack = t.stack[:count-8]
+	}
+	if count := len(t.openNodes); count > 0 {
+		t.openNodes = t.openNodes[:count-1]
+	}
+}
+
+func (t *Tick) exitNode(node Node) {
+}
+
+func (t *Tick) pushSubTreeNode(node *SubTree) {
+	t.openSubtreeNodes = append(t.openSubtreeNodes, node)
+}
+
+func (t *Tick) popSubTreeNode() {
+	if count := len(t.openSubtreeNodes); count > 0 {
+		t.openSubtreeNodes = t.openSubtreeNodes[:count-1]
+	}
 }

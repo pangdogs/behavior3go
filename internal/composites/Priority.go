@@ -9,7 +9,7 @@ type Priority struct {
 }
 
 func (p *Priority) OnTick(tick *Tick) Status {
-	for i := 0; i < p.GetChildCount(); i++ {
+	for i := int64(0); i < p.GetChildCount(); i++ {
 		status := p.GetChild(i).Execute(tick)
 		if status != FAILURE {
 			return status

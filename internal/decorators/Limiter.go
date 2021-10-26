@@ -23,12 +23,12 @@ func (limiter *Limiter) OnTick(tick *Tick) Status {
 		return ERROR
 	}
 
-	i := tick.Blackboard.GetInt64("i", tick.GetTree().GetID(), limiter.GetID())
+	i := tick.GetBlackboard().GetInt64(tick.GetStack(), "i")
 
 	if i < limiter.maxLoop {
 		status := limiter.GetChild().Execute(tick)
 		if status == SUCCESS || status == FAILURE {
-			tick.Blackboard.Set("i", i+1, tick.GetTree().GetID(), limiter.GetID())
+			tick.GetBlackboard().Set(tick.GetStack(), "i", i)
 		}
 		return status
 	}

@@ -9,20 +9,19 @@ type MemPriority struct {
 }
 
 func (mp *MemPriority) OnOpen(tick *Tick) {
-	tick.Blackboard.Set("runningChild", 0, tick.GetTree().GetID(), mp.GetID())
+	tick.GetBlackboard().Set(tick.GetStack(), "runningChild", int64(0))
 }
 
 func (mp *MemPriority) OnTick(tick *Tick) Status {
-	var child = tick.Blackboard.GetInt("runningChild", tick.GetTree().GetID(), mp.GetID())
+	child := tick.GetBlackboard().GetInt64(tick.GetStack(), "runningChild")
 
 	for i := child; i < mp.GetChildCount(); i++ {
 		status := mp.GetChild(i).Execute(tick)
 
 		if status != FAILURE {
 			if status == RUNNING {
-				tick.Blackboard.Set("runningChild", i, tick.GetTree().GetID(), mp.GetID())
+				tick.GetBlackboard().Set(tick.GetStack(), "runningChild", i)
 			}
-
 			return status
 		}
 	}

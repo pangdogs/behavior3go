@@ -2,6 +2,7 @@ package core
 
 import (
 	. "github.com/pangdogs/behavior3go/internal/config"
+	"unsafe"
 )
 
 type Node interface {
@@ -14,7 +15,8 @@ type Node interface {
 	GetNode() Node
 	SetWorker(worker Worker)
 	GetWorker() Worker
-	_setSetting(setting *BTNodeCfg)
+	getHandle() uintptr
+	setSetting(setting *BTNodeCfg)
 	GetSetting() *BTNodeCfg
 	Execute(tick *Tick) Status
 	_execute(tick *Tick) Status
@@ -62,7 +64,11 @@ func (bn *BaseNode) GetWorker() Worker {
 	return bn.Worker
 }
 
-func (bn *BaseNode) _setSetting(setting *BTNodeCfg) {
+func (bn *BaseNode) getHandle() uintptr {
+	return uintptr(unsafe.Pointer(bn))
+}
+
+func (bn *BaseNode) setSetting(setting *BTNodeCfg) {
 	bn.BTNodeCfg = setting
 }
 
@@ -79,7 +85,7 @@ func (bn *BaseNode) _execute(tick *Tick) Status {
 	bn._enter(tick)
 
 	// OPEN
-	if !tick.Blackboard.GetBool("isOpen", tick.tree.GetID(), bn.GetID()) {
+	if !tick.GetBlackboard().GetBool(tick.GetStack(), "isOpen") {
 		bn._open(tick)
 	}
 
@@ -98,28 +104,28 @@ func (bn *BaseNode) _execute(tick *Tick) Status {
 }
 
 func (bn *BaseNode) _enter(tick *Tick) {
-	tick._enterNode(bn.GetNode())
+	tick.enterNode(bn.GetNode())
 	bn.OnEnter(tick)
 }
 
 func (bn *BaseNode) _open(tick *Tick) {
-	tick._openNode(bn.GetNode())
-	tick.Blackboard.Set("isOpen", true, tick.tree.GetID(), bn.GetID())
+	tick.openNode(bn.GetNode())
+	tick.GetBlackboard().Set(tick.GetStack(), "isOpen", true)
 	bn.OnOpen(tick)
 }
 
 func (bn *BaseNode) _tick(tick *Tick) Status {
-	tick._tickNode(bn.GetNode())
+	tick.tickNode(bn.GetNode())
 	return bn.OnTick(tick)
 }
 
 func (bn *BaseNode) _close(tick *Tick) {
-	tick._closeNode(bn.GetNode())
-	tick.Blackboard.Set("isOpen", false, tick.tree.GetID(), bn.GetID())
+	tick.GetBlackboard().Set(tick.GetStack(), "isOpen", false)
+	tick.closeNode(bn.GetNode())
 	bn.OnClose(tick)
 }
 
 func (bn *BaseNode) _exit(tick *Tick) {
-	tick._exitNode(bn.GetNode())
+	tick.exitNode(bn.GetNode())
 	bn.OnExit(tick)
 }

@@ -9,7 +9,7 @@ type Sequence struct {
 }
 
 func (s *Sequence) OnTick(tick *Tick) Status {
-	for i := 0; i < s.GetChildCount(); i++ {
+	for i := int64(0); i < s.GetChildCount(); i++ {
 		status := s.GetChild(i).Execute(tick)
 		if status != SUCCESS {
 			return status

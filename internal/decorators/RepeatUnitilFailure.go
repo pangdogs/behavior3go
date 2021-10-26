@@ -19,7 +19,7 @@ func (ruf *RepeatUntilFailure) Initialize(setting *BTNodeCfg) {
 }
 
 func (ruf *RepeatUntilFailure) OnOpen(tick *Tick) {
-	tick.Blackboard.Set("i", int64(0), tick.GetTree().GetID(), ruf.GetID())
+	tick.GetBlackboard().Set(tick.GetStack(), "i", int64(0))
 }
 
 func (ruf *RepeatUntilFailure) OnTick(tick *Tick) Status {
@@ -27,7 +27,7 @@ func (ruf *RepeatUntilFailure) OnTick(tick *Tick) Status {
 		return ERROR
 	}
 
-	i := tick.Blackboard.GetInt64("i", tick.GetTree().GetID(), ruf.GetID())
+	i := tick.GetBlackboard().GetInt64(tick.GetStack(), "i")
 	status := ERROR
 
 	for ruf.maxLoop < 0 || i < ruf.maxLoop {
@@ -39,6 +39,6 @@ func (ruf *RepeatUntilFailure) OnTick(tick *Tick) Status {
 		}
 	}
 
-	tick.Blackboard.Set("i", i, tick.GetTree().GetID(), ruf.GetID())
+	tick.GetBlackboard().Set(tick.GetStack(), "i", i)
 	return status
 }

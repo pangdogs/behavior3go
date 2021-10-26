@@ -9,20 +9,19 @@ type MemSequence struct {
 }
 
 func (ms *MemSequence) OnOpen(tick *Tick) {
-	tick.Blackboard.Set("runningChild", 0, tick.GetTree().GetID(), ms.GetID())
+	tick.GetBlackboard().Set(tick.GetStack(), "runningChild", int64(0))
 }
 
 func (ms *MemSequence) OnTick(tick *Tick) Status {
-	var child = tick.Blackboard.GetInt("runningChild", tick.GetTree().GetID(), ms.GetID())
+	child := tick.GetBlackboard().GetInt64(tick.GetStack(), "runningChild")
 
 	for i := child; i < ms.GetChildCount(); i++ {
 		status := ms.GetChild(i).Execute(tick)
 
 		if status != SUCCESS {
 			if status == RUNNING {
-				tick.Blackboard.Set("runningChild", i, tick.GetTree().GetID(), ms.GetID())
+				tick.GetBlackboard().Set(tick.GetStack(), "runningChild", i)
 			}
-
 			return status
 		}
 	}

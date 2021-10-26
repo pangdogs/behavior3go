@@ -20,7 +20,18 @@ type BTNodeCfg struct {
 	Properties  map[string]interface{} `json:"properties"`
 }
 
+func (cfg *BTNodeCfg) GetProperty(name string) (interface{}, bool) {
+	if cfg.Properties == nil {
+		return nil, false
+	}
+	v, ok := cfg.Properties[name]
+	return v, ok
+}
+
 func (cfg *BTNodeCfg) GetPropertyAsFloat64(name string) float64 {
+	if cfg.Properties == nil {
+		return 0
+	}
 	v, ok := cfg.Properties[name]
 	if !ok {
 		return 0
@@ -29,6 +40,9 @@ func (cfg *BTNodeCfg) GetPropertyAsFloat64(name string) float64 {
 }
 
 func (cfg *BTNodeCfg) GetPropertyAsInt64(name string) int64 {
+	if cfg.Properties == nil {
+		return 0
+	}
 	v, ok := cfg.Properties[name]
 	if !ok {
 		return 0
@@ -37,6 +51,10 @@ func (cfg *BTNodeCfg) GetPropertyAsInt64(name string) int64 {
 }
 
 func (cfg *BTNodeCfg) GetPropertyAsBool(name string) bool {
+	if cfg.Properties == nil {
+		return false
+	}
+
 	v, ok := cfg.Properties[name]
 	if !ok {
 		return false
@@ -54,6 +72,9 @@ func (cfg *BTNodeCfg) GetPropertyAsBool(name string) bool {
 }
 
 func (cfg *BTNodeCfg) GetPropertyAsString(name string) string {
+	if cfg.Properties == nil {
+		return ""
+	}
 	v, ok := cfg.Properties[name]
 	if !ok {
 		return ""

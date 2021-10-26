@@ -1,8 +1,12 @@
 package core
 
+type Scope struct {
+	stack, field string
+}
+
 type Blackboard struct {
 	tick   Tick
-	memory map[string]interface{}
+	memory map[Scope]interface{}
 }
 
 func NewBlackboard() *Blackboard {
@@ -12,7 +16,7 @@ func NewBlackboard() *Blackboard {
 }
 
 func (b *Blackboard) Initialize() {
-	b.memory = make(map[string]interface{})
+	b.memory = make(map[Scope]interface{})
 }
 
 func (b *Blackboard) GetTick() *Tick {
@@ -20,16 +24,25 @@ func (b *Blackboard) GetTick() *Tick {
 }
 
 func (b *Blackboard) Set(stack Stack, field string, value interface{}) {
-	b.memory[stack.toString()+field] = value
+	b.memory[Scope{
+		stack: stack.toString(),
+		field: field,
+	}] = value
 }
 
 func (b *Blackboard) Get(stack Stack, field string) (interface{}, bool) {
-	v, ok := b.memory[stack.toString()+field]
+	v, ok := b.memory[Scope{
+		stack: stack.toString(),
+		field: field,
+	}]
 	return v, ok
 }
 
 func (b *Blackboard) Remove(stack Stack, field string) {
-	delete(b.memory, stack.toString()+field)
+	delete(b.memory, Scope{
+		stack: stack.toString(),
+		field: field,
+	})
 }
 
 func (b *Blackboard) GetFloat64(stack Stack, field string) float64 {

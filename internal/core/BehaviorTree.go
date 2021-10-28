@@ -106,7 +106,7 @@ func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard, enableV
 
 	/* CREATE A TICK OBJECT */
 	tick := blackboard.GetTick()
-	tick.Initialize(blackboard, bt, target, enableVT, virtualTime)
+	tick.initialize(bt, target, blackboard, enableVT, virtualTime)
 
 	/* TICK NODE */
 	state := bt.GetRoot().Execute(tick)
@@ -135,7 +135,7 @@ func (bt *BehaviorTree) Tick(target interface{}, blackboard *Blackboard, enableV
 
 	// close the nodes
 	for i := len(lastOpenNodes) - 1; i >= start; i-- {
-		lastOpenNodes[i]._close(tick)
+		lastOpenNodes[i].close(tick)
 	}
 
 	/* POPULATE BLACKBOARD */

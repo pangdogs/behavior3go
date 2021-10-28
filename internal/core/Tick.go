@@ -3,27 +3,23 @@ package core
 import "time"
 
 type Tick struct {
-	blackboard       *Blackboard
 	bevTree          *BehaviorTree
 	target           interface{}
+	blackboard       *Blackboard
 	enableVT         bool
 	virtualTime      time.Duration
 	openNodes        []Node
 	openSubtreeNodes []*SubTree
 }
 
-func (t *Tick) Initialize(blackboard *Blackboard, bevTree *BehaviorTree, target interface{}, enableVT bool, virtualTime time.Duration) {
-	t.blackboard = blackboard
+func (t *Tick) initialize(bevTree *BehaviorTree, target interface{}, blackboard *Blackboard, enableVT bool, virtualTime time.Duration) {
 	t.bevTree = bevTree
 	t.target = target
+	t.blackboard = blackboard
 	t.enableVT = enableVT
 	t.virtualTime = virtualTime
 	t.openNodes = t.openNodes[:0]
 	t.openSubtreeNodes = t.openSubtreeNodes[:0]
-}
-
-func (t *Tick) GetBlackboard() *Blackboard {
-	return t.blackboard
 }
 
 func (t *Tick) GetBevTree() *BehaviorTree {
@@ -32,6 +28,10 @@ func (t *Tick) GetBevTree() *BehaviorTree {
 
 func (t *Tick) GetTarget() interface{} {
 	return t.target
+}
+
+func (t *Tick) GetBlackboard() *Blackboard {
+	return t.blackboard
 }
 
 func (t *Tick) GetEnableVT() bool {

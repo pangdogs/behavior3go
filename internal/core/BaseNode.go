@@ -19,12 +19,7 @@ type Node interface {
 	setSetting(setting *BTNodeCfg)
 	GetSetting() *BTNodeCfg
 	Execute(tick *Tick) Status
-	_execute(tick *Tick) Status
-	_enter(tick *Tick)
-	_open(tick *Tick)
-	_tick(tick *Tick) Status
-	_close(tick *Tick)
-	_exit(tick *Tick)
+	close(tick *Tick)
 }
 
 type BaseNode struct {
@@ -77,55 +72,55 @@ func (bn *BaseNode) GetSetting() *BTNodeCfg {
 }
 
 func (bn *BaseNode) Execute(tick *Tick) Status {
-	return bn._execute(tick)
+	return bn.execute(tick)
 }
 
-func (bn *BaseNode) _execute(tick *Tick) Status {
+func (bn *BaseNode) execute(tick *Tick) Status {
 	// ENTER
-	bn._enter(tick)
+	bn.enter(tick)
 
 	// OPEN
 	if !tick.GetBlackboard().GetBool(bn.GetHandle(), "isOpen") {
-		bn._open(tick)
+		bn.open(tick)
 	}
 
 	// TICK
-	var status = bn._tick(tick)
+	status := bn.tick(tick)
 
 	// CLOSE
 	if status != RUNNING {
-		bn._close(tick)
+		bn.close(tick)
 	}
 
 	// EXIT
-	bn._exit(tick)
+	bn.exit(tick)
 
 	return status
 }
 
-func (bn *BaseNode) _enter(tick *Tick) {
+func (bn *BaseNode) enter(tick *Tick) {
 	tick.enterNode(bn.GetNode())
 	bn.OnEnter(tick)
 }
 
-func (bn *BaseNode) _open(tick *Tick) {
+func (bn *BaseNode) open(tick *Tick) {
 	tick.openNode(bn.GetNode())
 	tick.GetBlackboard().Set(bn.GetHandle(), "isOpen", true)
 	bn.OnOpen(tick)
 }
 
-func (bn *BaseNode) _tick(tick *Tick) Status {
+func (bn *BaseNode) tick(tick *Tick) Status {
 	tick.tickNode(bn.GetNode())
 	return bn.OnTick(tick)
 }
 
-func (bn *BaseNode) _close(tick *Tick) {
+func (bn *BaseNode) close(tick *Tick) {
 	tick.GetBlackboard().Set(bn.GetHandle(), "isOpen", false)
 	tick.closeNode(bn.GetNode())
 	bn.OnClose(tick)
 }
 
-func (bn *BaseNode) _exit(tick *Tick) {
+func (bn *BaseNode) exit(tick *Tick) {
 	tick.exitNode(bn.GetNode())
 	bn.OnExit(tick)
 }

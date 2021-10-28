@@ -25,6 +25,9 @@ func (b *Blackboard) GetTick() *Tick {
 }
 
 func (b *Blackboard) Set(handle uintptr, field string, value interface{}) {
+	if b.memory == nil {
+		return
+	}
 	b.memory[MemKey{
 		handle: handle,
 		field:  field,
@@ -32,6 +35,9 @@ func (b *Blackboard) Set(handle uintptr, field string, value interface{}) {
 }
 
 func (b *Blackboard) Get(handle uintptr, field string) (interface{}, bool) {
+	if b.memory == nil {
+		return nil, false
+	}
 	v, ok := b.memory[MemKey{
 		handle: handle,
 		field:  field,
@@ -40,6 +46,9 @@ func (b *Blackboard) Get(handle uintptr, field string) (interface{}, bool) {
 }
 
 func (b *Blackboard) Remove(handle uintptr, field string) {
+	if b.memory == nil {
+		return
+	}
 	delete(b.memory, MemKey{
 		handle: handle,
 		field:  field,
